@@ -1,0 +1,172 @@
+﻿@model DBSystemTP.Entities.ViewModels.UsuarioEditViewModel
+
+@{
+    /**/
+
+    ViewBag.Title = "Crear Usuario";
+}
+
+<h2>Crear Usuario</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Usuario</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.NombreUsuario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NombreUsuario, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NombreUsuario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DireccionUsuario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DireccionUsuario, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DireccionUsuario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaUsuario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FechaUsuario, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FechaUsuario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IdentificacionUsuario, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IdentificacionUsuario, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.IdentificacionUsuario, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => Model.SelectedTipoIdentificacion, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownListFor(x => Model.SelectedTipoIdentificacion, new SelectList(Model.TiposIdentificacion, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "TipoIdentificacion" })
+                @Html.ValidationMessageFor(x => x.SelectedTipoIdentificacion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(x => Model.SelectedPais, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownListFor(x => Model.SelectedPais, new SelectList(Model.Paises, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Pais" })
+                @Html.ValidationMessageFor(x => x.SelectedPais, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(x => Model.SelectedDepartamento, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownListFor(x => Model.SelectedDepartamento, new SelectList(Model.Departamentos, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Departamento" })
+                @Html.ValidationMessageFor(x => x.SelectedDepartamento, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*    <div class="form-group">
+                @Html.LabelFor(x => Model.SelectedCiudad, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.DropDownListFor(x => Model.SelectedCiudad, new SelectList(Model.Paises, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "Ciudad" })
+                    @Html.ValidationMessageFor(x => x.SelectedCiudad, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+                $('#Pais').change(function () {
+                    var selectedPais = $("#Pais").val();
+                    var departamentosSelect = $('#Departamento');
+                    departamentosSelect.empty();
+                    if (selectedPais != null && selectedPais != '') {
+                        $.getJSON('@Url.Action("GetDepartamentos")', { paisSelectedParam: selectedPais }, function (departamentos) {
+                            if (departamentos != null && !jQuery.isEmptyObject(departamentos))
+                            {
+                                departamentosSelect.append($('<option/>', {
+                                    value: null,
+                                    text: ""
+                                }));
+                                $.each(departamentos, function (index, departamentos) {
+                                    departamentosSelect.append($('<option/>', {
+                                        value: departamentos.Value,
+                                        text: departamentos.Text
+                                    }));
+                                });
+                            };
+                        });
+                    }
+                });
+    </script>
+      
+
+        @*<script type="text/javascript">
+                $(document).ready(function () {
+                    var tipoidentificacionSelect = $('#TipoIdentificacion');
+                    $.getJSON('@Url.Action("GetTiposIdentificacion")', function (tiposidentificacion2) {
+                        if (tiposidentificacion2 != null && !jQuery.isEmptyObject(tiposidentificacion2))
+                                {
+                            tipoidentificacionSelect.append($('<option/>', {
+                                        value: null,
+                                        text: ""
+                                    }));
+                            $.each(tiposidentificacion2, function (index, tiposidentificacion2) {
+                                tipoidentificacionSelect.append($('<option/>', {
+                                            value: tiposidentificacion2.Value,
+                                            text: tiposidentificacion2.Text
+                                        }));
+                                    });
+                                };
+                            });
+
+
+                }
+            </script>*@
+@*<script type="text/javascript">
+            $('#TipoIdentificacion').change(function () {
+                    var selectedPais = $("#Pais").val();
+                    var departamentosSelect = $('#Departamento');
+                    departamentosSelect.empty();
+                    if (selectedPais != null && selectedPais != '') {
+                        $.getJSON('@Url.Action("GetDepartamentos")', { iso3: selectedPais }, function (departamentos) {
+                            if (departamentos != null && !jQuery.isEmptyObject(departamentos))
+                            {
+                                departamentosSelect.append($('<option/>', {
+                                    value: null,
+                                    text: ""
+                                }));
+                                $.each(departamentos, function (index, departamentos) {
+                                    departamentosSelect.append($('<option/>', {
+                                        value: departamentos.Value,
+                                        text: departamentos.Text
+                                    }));
+                                });
+                            };
+                        });
+                    }
+                });
+    </script>*@
+}
